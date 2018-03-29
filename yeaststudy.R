@@ -2,14 +2,25 @@
 
 ## what is the distribution of genelength depending on GO terms
 
-##source("https://bioconductor.org/biocLite.R")
-##biocLite("biomaRt")
+source("https://bioconductor.org/biocLite.R")
+biocLite("biomaRt")
 
 ## Load data from ensembl
 require(biomaRt)
-mart = useMart("ENSEMBL_MART_ENSEMBL",host="www.ensembl.org")
-mart = useMart("fungal_mart",host="fungi.ensembl.org")
-ensembl = useDataset("scerevisiae_eg_gene", mart = mart)
+
+datachoice=1
+
+## potentially two dataset within biormart
+if(datachoice==1)
+{
+    mart = useMart("ENSEMBL_MART_ENSEMBL",host="www.ensembl.org")
+    ensembl = useDataset("scerevisiae_gene_ensembl", mart = mart)
+}
+else ##or
+{
+    mart = useMart("fungi_mart",host="fungi.ensembl.org")
+    ensembl = useDataset("scerevisiae_eg_gene", mart = mart)
+}
                       
 ## get GO terms
 #Q1 = getBM(attributes =
@@ -28,14 +39,21 @@ names(Q)[4]="gene_length"
 #Q = merge(Q1,Q2)
 
 ## save this datset to not have to fetch it again
-save(Q,file="go_yeast_191217_fungimart.txt")
+save(Q,file="go_yeast_150318_fungimart.txt")
 
 
-load(file="go_yeast_81217.txt")
+load(file="go_yeast_150318_fungimart.txt")
+
+#install.packages("tidyverse")
+#install.packages("gridExtra")
 
 library(tidyverse)
 library(dplyr)
 library(gridExtra)
+
+
+######## DATA EXPLORATION ##############
+
 
 #filter by the number of genes per GO
 #Q3=list('go_id'=names(which(table(Q[,2])>10)))
@@ -183,18 +201,26 @@ points(unlist(rsq)[sorted],col=rainbow(300))
 plot(unlist(rsq2)[sorted],col=abs(unlist(rsq)[sorted]*100),ylim=c(0,1))
 
 
+############# DO SIMULATION ###########
+
 simugenes=Qtot[,c(1,3,2)]
 names(simugenes)[3]="genelength"
 names(simugenes)[2]="gene_id"
 simugo=gotable[,c(1,2,4)]
 
+source("dosimu.R")
+
 for(i in 1:1000)
 {
-    doempsimunew(1,simugenes,simugo,0,10000,foldername="yeastsimu21dec/")
+    doempsimunew(1,simugenes,simugo,0,10000,foldername="yeastsimu15mar/")
 }
 
 
-foldername="yeastsimu21dec/"
+############## DO TESTING #############
+
+source("dotest.R")
+
+foldername="yeastsimu15mar/"
 tot=matrix(0,nrow=1000,ncol=17)
 tot2=matrix(0,nrow=1000,ncol=17)
 tot3=matrix(0,nrow=1000,ncol=17)
@@ -217,7 +243,7 @@ for( filename in list.files(path=foldername))
     ##   save(tot,tot2,tot3,file="emptot.Rdata")
 #    plotTFNP(tot)
 }
-#save(tot,file="emptot.R
+save(tot,file="emptot.R")
 
 
 plotTFNP <- function(tot){
