@@ -122,7 +122,7 @@ plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by 
 abline(0.05,0,lty=2) # pvalue threshold at 0.05
 # in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
 ```
-![example 1]("images/example1.png")
+![example 1](images/example1.png)
 
 ```
 ## 2nd example
@@ -147,7 +147,7 @@ abline(0.05,0,lty=2) # pvalue threshold at 0.05
 # in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
 ```
 
-![example 2]("images/example2.png")
+![example 2](images/example2.png)
 
 
 These two first example were using simulated networks that will not reflect the specific topology of gene set. We present a third example that loads the exisiting saccharomyces cerevisiae GO network
@@ -179,7 +179,7 @@ legend('topright',c("active","not active"),col=c("blue","red"),lty=1)
 
 ```
 
-![example 3]("images/example3.png")
+![example 3](images/example3.png)
 
 ----------------------------------
 
