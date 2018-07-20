@@ -2,7 +2,7 @@
 
 ##script that define function to test for go enrichment according to diffreent methods
 
-dotest<-function(experiment)
+dotest<-function(experiment,adjustPvalMethod="fdr")
 {## method 1 is global resampling, method 2 is local resampling
     simugo=experiment[[1]]
 simugenes=experiment[[2]]
@@ -63,12 +63,12 @@ parameters=experiment[[3]]
                 notGOpos=nbpositive
                 notGOneg=nbnegative
                 f=phyper(active2[[1]],notGOpos[[1]],notGOneg[[1]],nbgenesGO,lower.tail=F)
-                gofinal[i,2]=min(f*nbgenesGO,1)
+                gofinal[i,2]=p.adjust(f,method=adjustPvalMethod)
                 f2=phyper(active[[1]],TOTnbpositive,TOTnbnegative,nbgenesGO,lower.tail=F)
-                gofinal[i,3]=min(f2*nbgenesGO,1)
+                gofinal[i,3]=p.adjust(f2,method=adjustPvalMethod)
             }
         }
-        return(list(merge(gofinal,simugo,by="go_id"),parameters))
+    return(merge(gofinal,simugo,by="go_id"))
 #    }
     ##    else
  #   return(list(gofinal=list(),simugo,parameters))    

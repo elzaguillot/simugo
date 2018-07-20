@@ -1,9 +1,11 @@
 ### example of the use of the package
 
+## 1st example
 
 ## create a network
-set.seed(32)
+set.seed(33)
 mockgeneset=makeset(nbgo=30,nbgenes=100,nbgopergenes=5)
+
 
 ## create an experiment where longer genes are more active
 
@@ -19,4 +21,79 @@ experiment # this object contains the data for a simulated experieents, with a l
 
 
 ## test for enrichment 
-dotest(experiment) # for each go return a pvalue corresponding to different methods and the mean value of the bias of its genes
+result=dotest(experiment) # for each gene set return the adjusted pvalue corresponding to different methods and the mean value of the bias of its genes
+
+
+plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set - the pvalue are corrected for mutiple testing with FDR
+abline(0.05,0,lty=2) # pvalue threshold at 0.05
+# in this example, only the truly active go are significantly active, but many active go are not picked by the method as significantly active
+
+
+## 2nd example
+set.seed(32)
+mockgeneset=makeset(nbgo=30,nbgenes=1000,nbgopergenes=5)
+
+## create an experiment where longer genes are more active
+
+distribution="normal" # parameters needed to simulate the bias in the measure of the activity
+sdBias=10
+meanBias=10
+advantage=0.5
+goforce=0.9
+nbgoselected=0.5
+
+experiment <- simuExp(mockgeneset,meanBias,sdBias, distribution,popGoExp,advantage,goforce,nbgoselected)
+experiment # this object contains the data for a simulated experieents, with a list of active go and a list of active genes and their simulated covariate
+
+
+## test for enrichment 
+result=dotest(experiment) # for each gene set return the adjusted pvalue corresponding to different methods and the mean value of the bias of its genes
+
+
+plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set
+abline(0.05,0,lty=2) # pvalue threshold at 0.05
+# in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
+
+## 2nd example
+set.seed(32)
+mockgeneset=makeset(nbgo=30,nbgenes=1000,nbgopergenes=5)
+
+## create an experiment where longer genes are more active
+
+distribution="normal" # parameters needed to simulate the bias in the measure of the activity
+sdBias=10
+meanBias=10
+advantage=0.5
+goforce=0.9
+nbgoselected=0.2
+experiment <- simuExp(mockgeneset,meanBias,sdBias, distribution,popGoExp,advantage,goforce,nbgoselected)
+experiment # this object contains the data for a simulated experieents, with a list of active go and a list of active genes and their simulated covariate
+
+## test for enrichment 
+result=dotest(experiment) # for each gene set return the adjusted pvalue corresponding to different methods and the mean value of the bias of its genes
+plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set
+abline(0.05,0,lty=2) # pvalue threshold at 0.05
+# in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
+
+## 3rd example
+set.seed(32)
+mockgeneset=yeastnetwork()
+## in this example we use the real yeast go 
+
+distribution="normal" # parameters needed to simulate the bias in the measure of the activity
+sdBias=10
+meanBias=10
+advantage=0.5
+goforce=0.9
+nbgoselected=0.2
+experiment <- simuExp(mockgeneset,meanBias,sdBias, distribution,popGoExp,advantage,goforce,nbgoselected)
+experiment # this object contains the data for a simulated experieents, with a list of active go and a list of active genes and their simulated covariate
+
+## test for enrichment 
+result=dotest(experiment) # for each gene set return the adjusted pvalue corresponding to different methods and the mean value of the bias of its genes
+plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set
+abline(0.05,0,lty=2) # pvalue threshold at 0.05
+
+hist(result$pval_classic[which(!result$active)],col=rgb(1,0,0,0.4),xlab="pvalue",ylab="number of go")
+hist(result$pval_classic[which(result$active==1)],col=rgb(0,0,1,0.4),add=T)
+legend('topright',c("active","not active"),col=c("blue","red"),lty=1)
