@@ -121,7 +121,10 @@ result=dotest(experiment) # for each gene set return the adjusted pvalue corresp
 plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set
 abline(0.05,0,lty=2) # pvalue threshold at 0.05
 # in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
+```
+![example 1]("images/example1.png")
 
+```
 ## 2nd example
 set.seed(32)
 mockgeneset=makeset(nbgo=30,nbgenes=1000,nbgopergenes=5)
@@ -142,7 +145,14 @@ result=dotest(experiment) # for each gene set return the adjusted pvalue corresp
 plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set
 abline(0.05,0,lty=2) # pvalue threshold at 0.05
 # in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
+```
 
+![example 2]("images/example2.png")
+
+
+These two first example were using simulated networks that will not reflect the specific topology of gene set. We present a third example that loads the exisiting saccharomyces cerevisiae GO network
+
+```
 ## 3rd example
 
 set.seed(32)
@@ -168,6 +178,8 @@ hist(result$pval_classic[which(result$active==1)],col=rgb(0,0,1,0.4),add=T)
 legend('topright',c("active","not active"),col=c("blue","red"),lty=1)
 
 ```
+
+![example 3]("images/example3.png")
 
 ----------------------------------
 
