@@ -16,7 +16,7 @@ parameters=experiment[[3]]
     goterms=simugo$go_id
     gofinal=data.frame("go_id"=goterms,"pval_classic"=rep(1,length(goterms)),"pval_corrected"=rep(1,length(goterms)),"meanBias"=rep(1,length(goterms)))
 #    if(sum(simugenes$bias<0)<=0)
-#    {        
+#    {
         ## set appart the distro of gene length
         allGeneLL=simugenes$bias
 #        print(simugenes)
@@ -51,15 +51,15 @@ parameters=experiment[[3]]
                 ## first compute the distribubtion
                 normalfitGO <- fitdistr(bias,"normal",na.rm=T)$estimate
                 gofinal[i,4]=mean(bias)
-                ## option1 
+                ## option1
                 d2=dnorm(allGeneLL,normalfitGO[1],normalfitTot[2])
-                normalizationFactor=dim(simugenes)[1]/sum(d2) ## total nb of genes / sum of d2  
+                normalizationFactor=dim(simugenes)[1]/sum(d2) ## total nb of genes / sum of d2
                 notGOpos=sum(simugenes$active*d2)*normalizationFactor
                 notGOneg=sum((!simugenes$active)*d2)*normalizationFactor
                 ## option 2
-                testsample=sample(1:length(simugenes[,1]),length(simugenes[,1]),replace=TRUE,prob=dnorm(allGeneLL,normalfitGO[1],normalfitTot[2])*1/d)                                
+                testsample=sample(1:length(simugenes[,1]),length(simugenes[,1]),replace=TRUE,prob=dnorm(allGeneLL,normalfitGO[1],normalfitTot[2])*1/d)
                 nbpositive=sum(simugenes$active[testsample])
-                nbnegative=length(simugenes$active[testsample])-nbpositive     
+                nbnegative=length(simugenes$active[testsample])-nbpositive
                 notGOpos=nbpositive
                 notGOneg=nbnegative
                 f=phyper(active2[[1]],notGOpos[[1]],notGOneg[[1]],nbgenesGO,lower.tail=F)
@@ -71,23 +71,6 @@ parameters=experiment[[3]]
     return(merge(gofinal,simugo,by="go_id"))
 #    }
     ##    else
- #   return(list(gofinal=list(),simugo,parameters))    
-}
-
-
-
-
-docompareDF<-function(gotable,simugo)
-{
-    require(dplyr)
-    saveOutput=rep(0,5)
-    bigtable=simugo %>%left_join(gotable,by="go_id")
-    saveOutput[1]=table((bigtable$over_represented_pvalue<0.05)==bigtable$active)["TRUE"]    
-    ##    saveOutput[1]=table((gotable[,2]<0.05)==simugo$active)["TRUE"] ## accuracy 1
-    saveOutput[2]=max(table((bigtable$over_represented_pvalue<0.05)-bigtable$active)["-1"],0,na.rm=T) #FN 1
-    saveOutput[3]=sum(((bigtable$over_represented_pvalue<0.05)==F)&(bigtable$active=="0")) #TN1
-    saveOutput[4]=sum(((bigtable$over_represented_pvalue<0.05)==T)&(bigtable$active=="1")) #TP1
-    saveOutput[5]=max(table((bigtable$over_represented_pvalue<0.05)-bigtable$active)["1"],0,na.rm=T)# FP2
-    return(saveOutput)
+ #   return(list(gofinal=list(),simugo,parameters))
 }
 

@@ -25,7 +25,7 @@ dosimu<-function(k, meanGLLT, sdGLLT, nbsimu, nbgenes, nbgo, goID, geneID, model
     parameters[3] = goforce
     parameters[4] = distribution
     parameters[5] = model
-    ## create a fake distribution of mean of each go    
+    ## create a fake distribution of mean of each go
     gogldistribution = rnorm(length(goterms), meanGLLT, sdGLLT/10)
     ##    gogldistribution = rgamma(length(goterms), meanGLLT/5, scale = 5)
     ##        print("YO")
@@ -60,17 +60,17 @@ dosimu<-function(k, meanGLLT, sdGLLT, nbsimu, nbgenes, nbgo, goID, geneID, model
     simugo$glemp = simugo$glemp*1.0/simugo$nbgenes+1
     print(sum(simugenes$genelength<0))
     divisor1<-(max(simugenes$genelength)*advantage)/(1-goforce)
-    divisor2 = (max(exp(simugenes$genelength))*advantage)/(1-goforce)/2    
+    divisor2 = (max(exp(simugenes$genelength))*advantage)/(1-goforce)/2
     for(i in 1:nbgenes)
     {
         ## find the go
         thisgo = simugenes$go_id[i][1]
         tgo = which(simugo$go_id == thisgo)
-        
+
         ## is that go selected ?
-        sel = simugo$selected[tgo]        
+        sel = simugo$selected[tgo]
         ##
-        if (sel == 1) ## if yes            
+        if (sel == 1) ## if yes
         {
             if (floor(model/2.0) == 0)
             {
@@ -88,92 +88,18 @@ dosimu<-function(k, meanGLLT, sdGLLT, nbsimu, nbgenes, nbgo, goID, geneID, model
                 simugenes$selected[i] = rbinom(1, 1, prob = min(0+simugenes$genelength[i]/divisor1*advantage/2, 1))
             if((model%%2) == 1)
                 simugenes$selected[i] = rbinom(1, 1, prob = 0.1)
-        }        
-    }    
+        }
+    }
     print("simu done")
     print(cor(simugenes[, c(2, 4)]))
     print(parameters)
     selectset = which(simugenes$go_id %in% simugo$go_id[(simugo$selected == 1)])
     print(cor(simugenes[selectset, c(2, 4)]))
-    ## save for each go terms: ID,  pval1,  pval2,  meanGL    
+    ## save for each go terms: ID,  pval1,  pval2,  meanGL
     ##    gofinal = data.frame("ID" = goterms, "pval1" = rep(1, length(goterms)), "pval2" = rep(1, length(goterms)), "pva;l3" = rep(1, length(goterms)))
     ##    print(table((gofinal[, 3]<0.05)-simugo[, 2]))
     save(simugo, simugenes, parameters, file = paste("simusept/simu", paste(parameters[c(4, 5)], collapse = "-"), nbgo, nbgenes, format(Sys.time(),  "%H:%M:%S"), ".Rdata", sep = "-"))
     return(c(cor(simugenes[selectset, c(2, 4)])[1, 2], parameters))
 }
 
-
-
-doempsimunew<-function(k, simugenes, simugo, model, subsamplesize, foldername)
-{    ## pb if two genes in two different gos
-    if(subsamplesize>dim(simugenes)[1])
-    {
-        print(paste("ERROR the subsample", subsamplesize, " is bigger than the size of the dataset", dim(simugenes)[1]))
-        return(0)
-    }
-    ##    simugenes = simugenes[sample(dim(simugenes)[1], subsamplesize), ]
-    ##    simugenes$gene_id = simugenes$ensembl_gene_id
-    simugo = simugo %>% filter(go_id %in% unique(simugenes$go_id))
-    nbgenes = length(simugenes[, 1])
-    parameters = rep(0, 5)
-    geneID = simugenes$ensembl_gene_id
-    goID = simugo$go_id
-    goterms = unique(simugenes$go_id)
-    ##    rownames(simugenes) = simugenes$ensembl_gene_id
-    simugenes$selected = rep(0, nbgenes)
-    ## Random choice of paramters
-    ## proportion of go selected vs non selected
-    nbgoselected = runif(1, 0, 0.5)
-    ## linear factor between probability of being selected and gene length
-    advantage = runif(1, 0, 1)
-    goforce = runif(1, 0, 1)
-    nbgo = dim(simugo)[1]
-    goselected = rbinom(nbgo, 1, nbgoselected)
-    simugo$selected = goselected
-    ## save for later
-    parameters[1] = nbgoselected
-    parameters[2] = advantage
-    parameters[3] = goforce
-    ##    parameters[4] = distribution
-    parameters[5] = model
-    ##
-    ## Simulate a pvalue for each gene
-    divisor1<-(max(simugenes$genelength)*advantage)/(1-goforce)
-    divisor2 = (max(exp(simugenes$genelength))*advantage)/(1-goforce)/2    
-                                        #    for(i in 1:nbgenes)
-    for(g in 1:nbgo)
-    {
-        ## find the go
-        thisgo = simugo$go_id[g]	
-        tgenes = which(simugenes$go_id == thisgo)
-        ## is that go selected ?
-        sel = simugo$selected[g]        
-        ##
-        if(sel == 1) ## if yes            
-        {
-            simugenes$selected[tgenes] = rbinom(length(tgenes), 1, prob = min(goforce+simugenes$genelength[tgenes]/divisor1*advantage, 1))
-        }
-        else
-        {
-            simugenes$selected[tgenes] = rbinom(length(tgenes), 1, prob = min(0+simugenes$genelength[tgenes]/divisor1*advantage/2, 1))
-        }
-    }
-    uniquegenes = unique(simugenes$ensembl_gene_id)
-    for(t in length(uniquegenes))
-    {
-        thesegenes = which(simugenes$gene_id == uniquegenes[t])
-        if(length(thesegenes)>1)
-        {
-            simugenes$selected[thesegenes] = sample(simugenes$selected[thesegenes], 1)
-        }
-    }
-                                        #    simugenes <- simugenes %>% distinct(gene_id) #remove the doublons
-    print("simu done")
-    selectset = which(simugenes$go_id %in% simugo$go_id[(simugo$selected == 1)])
-    ## save for each go terms: ID,  pval1,  pval2,  meanGL    
-    ##    gofinal = data.frame("ID" = goterms, "pval1" = rep(1, length(goterms)), "pval2" = rep(1, length(goterms)), "pva;l3" = rep(1, length(goterms)))
-    save(simugo, simugenes, parameters, file = paste(foldername, "/simu", paste(parameters[c(4, 5)], collapse = "-"), nbgo, nbgenes, format(Sys.time(),  "%H:%M:%S"), ".Rdata", sep = ""))
-    return(parameters)
-    ##    return(parameters)
-}
 
