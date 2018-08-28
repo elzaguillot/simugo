@@ -14,14 +14,15 @@
 #'
 #' @param geneset (dataframe) contains geneid and goid
 #' @param meanBias (double)  mean of the element (e.g. genelength) that create a bias
-#' @param sdBias (double) standard deviation of the element (e.g. genelength) that create a bias
+#' @param sdBiasGo the standard deviation of the covariant between gene sets (if =0 all go have similar distribution)
+#' @param sigma paramater of variation in the distributin of the covariant foe each gene within a go
 #' @param advantage (double) proportional to the probability that a gene is active if a go is active
 #' @param goforce (double) the probability that a gene is active is proportional to the bias element and go force
 #' @param nbgoactive (double) proportion of the go that will randomly selected as active following a binomial distribution
 #'
 #' @return Returns a list of 3 tables: simugs, simugenes and parameters
 
-simuExp<-function(geneset,meanBias,sdBias, distribution,advantage,goforce,nbgoactive)
+simuExp<-function(geneset,meanBias,sdBiasGo,sigma, distribution,advantage,goforce,nbgoactive)
 {
   library(MASS)
   parameters = rep(0, 5)
@@ -35,14 +36,12 @@ simuExp<-function(geneset,meanBias,sdBias, distribution,advantage,goforce,nbgoac
   parameters[2] = advantage
   parameters[3] = goforce
   parameters[4] = distribution
-  ## create a fake distribution of mean of each go
+  # randomly assign each geneset to active or not active
   goactive=rbinom(n = nbgo,size = 1,prob = nbgoactive)
-  tmp=simubias(geneset,meanBias,sdBias,goactive,distribution)
+  # simulate the covariant in genes
+  tmp=simubias(geneset,meanBias,sdBiasGo,sigma,goactive,distribution)
   simugenes=tmp[[2]]
   simugo=tmp[[1]]
-  ##    gobiasdistribution = rgamma(length(goterms), meanBias/5, scale = 5)
-  ##   gobiasdistribution = rcauchy(length(goterms), meanBias, sdBias/10)
-  ##    print(distribution)
   ## simulated go datasetm,  ID ,  ACTIVE,  GENE LENGTH
   ## Simulate a pvalue for each gene
   divisor1<-(max(simugenes$bias)*advantage)/(1-goforce)

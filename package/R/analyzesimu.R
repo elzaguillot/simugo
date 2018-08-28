@@ -1,10 +1,10 @@
 #' analyzesimu
 #'
-#'  `analyzesimu` - compare the reel simulated activity to the on inferred on the simulated dataset
+#' `analyzesimu` - compare the reel simulated activity to the on inferred on the simulated dataset
 #'
-#'   This function compare the actual simulated activity in gene set, to the ones inferred from the hypergemotric test on the genes
+#' This function compare the actual simulated activity in gene set, to the ones inferred from the hypergemotric test on the genes
 #'
-#'    @param experiement tba
+#' @param experiement tba
 
 analyzesimu<-function(experiment)
 {
