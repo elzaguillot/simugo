@@ -1,6 +1,27 @@
-## function that simulates experimental data of activity of of gene sets and gene
+#' simuExp
+#'
+#' simuExp simulate the activity of go and genes
+#'
+#' This function randomly simulates a certain proportion of go as active,
+#' and another proportion as inactive. It then randomly simulates genes as
+#' active or inactive, with a probability depending on whether they belong to
+#' an active or inactive gene set
+#'
+#' P(gene active| geneset active)=advantage + goforce*biaselement
+#'
+#' P(gene active| geneset NOT active)= goforce*biaselement
+#'
+#'
+#' @param geneset (dataframe) contains geneid and goid
+#' @param meanBias (double)  mean of the element (e.g. genelength) that create a bias
+#' @param sdBias (double) standard deviation of the element (e.g. genelength) that create a bias
+#' @param advantage (double) proportional to the probability that a gene is active if a go is active
+#' @param goforce (double) the probability that a gene is active is proportional to the bias element and go force
+#' @param nbgoactive (double) proportion of the go that will randomly selected as active following a binomial distribution
+#'
+#' @return Returns a list of 3 tables: simugs, simugenes and parameters
 
-simuExp<-function(geneset,meanBias,sdBias, distribution,popGoExp,advantage,goforce,nbgoactive)
+simuExp<-function(geneset,meanBias,sdBias, distribution,advantage,goforce,nbgoactive)
 {
   library(MASS)
   parameters = rep(0, 5)
@@ -46,7 +67,7 @@ simuExp<-function(geneset,meanBias,sdBias, distribution,popGoExp,advantage,gofor
     ## difference between the two cases is goforce term added
   }
   uniquegenes = unique(simugenes$gene_id)
-  for(t in 1:length(uniquegenes))
+  for(t in seq_along(uniquegenes))
   {
     thesegenes = which(simugenes$gene_id == uniquegenes[t])
     if(length(thesegenes)>1)

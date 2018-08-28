@@ -1,8 +1,12 @@
-## create a fake set of go / genes
-## 3 parameters:
-## nbgo: total number of unique go
-## nbgenes: total number of unique genes
-## nbgopergenes: average nb of go that a genes belong to
+#' makeset
+#'
+#' Makeset- Create a SIMULATED set of go / genes
+#'
+#' This function creates a random bipartite graph simulated gene sets
+#'
+#' @param nbgo integer - total number of unique go
+#' @param nbgenes integer - total number of unique genes
+#' @param nbgopergenes float - average nb of go that a genes belong to
 
 makeset <- function(nbgo,nbgenes,nbgopergenes)
 {
@@ -15,9 +19,9 @@ makeset <- function(nbgo,nbgenes,nbgopergenes)
     else
     {
         go_id=paste0("GO",1:nbgo)
-        nbgoforeachgene=min(rpois(1,2),nbgo)
+                nbgoforeachgene=sapply(rpois(nbgenes,nbgopergenes),min,nbgo)
         gene_id=paste0("gene_id",rep(1:nbgenes,nbgoforeachgene))
-        go_id2=unlist(lapply(1:nbgenes,y <- function(x)sample(go_id,nbgoforeachgene,replace=F)))
+        go_id2=unlist(sapply(nbgoforeachgene,sample,x=go_id,replace=F))
         return(data.frame("go_id"=go_id2,"gene_id"=gene_id))
     }
 }

@@ -28,10 +28,11 @@ parameters=experiment[[3]]
         TOTnbnegative=length(simugenes$active)-TOTnbpositive
         ## start test pval
         normalfitTot <- fitdistr(allGeneLL,"normal",rm.na=T)$estimate
-        d=dnorm(allGeneLL,normalfitTot[1],normalfitTot[2])+0.000000000000000000000000000000000000000001
+        d=dnorm(allGeneLL,normalfitTot[1],normalfitTot[2])#+0.000000000000000000000000000000000000000001
+        # because we divide by this value later, can not be ==0
         gotable=table(simugenes$go_id,simugenes$active)
         nbgo=length(gofinal[,1])
-        for( i in 1:length(gofinal[,1]))
+        for( i in seq_along(length(gofinal[,1])))
         {
             go=gofinal[i,1]
             ##print(i)

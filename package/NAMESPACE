@@ -1,5 +1,4 @@
 export('makeset')
-export('dosimu')
 export('dotest')
 export('docompareDF')
 export('simubias')
