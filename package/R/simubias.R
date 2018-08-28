@@ -1,4 +1,14 @@
-## simulated a bias in the detection of activity by
+#' simubias
+#'
+#' `simubias` - simulate a biased covariant in the genes
+#'
+#' This function simulate a biased covariant in the genes that will affect the simulated activity. This bias can follow several distributions.
+#'
+#'@param geneset table with geneid and goid
+#'@param meanBias the mean of the covariant
+#'@param sdBias the standard deviation of the covariant
+#'@param goactive the percentage of go that is simulated as active
+#'@param distribution the distribution of the covariant
 
 simubias<-function(geneset,meanBias,sdBias,goactive,distribution="normal")
 {

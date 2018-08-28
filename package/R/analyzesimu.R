@@ -1,4 +1,10 @@
-# function that does statistics on the difference between actual data and simulated data
+#' analyzesimu
+#'
+#'  `analyzesimu` - compare the reel simulated activity to the on inferred on the simulated dataset
+#'
+#'   This function compare the actual simulated activity in gene set, to the ones inferred from the hypergemotric test on the genes
+#'
+#'    @param experiement tba
 
 analyzesimu<-function(experiment)
 {

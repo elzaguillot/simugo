@@ -1,4 +1,12 @@
-
+#' dotest
+#'
+#' `dotest` - run enrichment test for gene sets
+#'
+#' This function runs enrichment on simulated or obsevered gene sets, based on binary data (activity or no activity).
+#' It uses a hypergeometric test, as well as a corrected hypergeometric test for bias such as gene length.
+#'
+#' @param adjustPvalMethod correction method, see `p.adjust`
+#' @param experiment
 
 ##script that define function to test for go enrichment according to diffreent methods
 
