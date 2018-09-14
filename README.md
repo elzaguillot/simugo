@@ -62,7 +62,7 @@ Finally you can run the typical gene set enrichment test such as the hypergeomet
 
 ### Installation
 
-This package requires biomaRt to be installed first. Then can directly install the package from github using `devtools`.
+This package requires biomaRt to be installed first. Then you can directly install the package from github using `devtools`.
 
 ```
 source("https://bioconductor.org/biocLite.R")
