@@ -5,7 +5,7 @@
 #' This function randomly simulates a certain proportion of go as active,
 #' and another proportion as inactive. It then randomly simulates genes as
 #' active or inactive, with a probability depending on whether they belong to
-#' an active or inactive gene set
+#' an active or inactive gene set. This function calls the simuBias function.
 #'
 #' P(gene active| geneset active)=advantage + goforce*biaselement
 #'
@@ -15,7 +15,7 @@
 #' @param geneset (dataframe) contains geneid and goid
 #' @param meanBias (double)  mean of the element (e.g. genelength) that create a bias
 #' @param sdBiasGo the standard deviation of the covariant between gene sets (if =0 all go have similar distribution)
-#' @param sigma paramater of variation in the distributin of the covariant foe each gene within a go
+#' @param sigma parameter of variation in the distribution of the covariant for each gene within a go
 #' @param advantage (double) proportional to the probability that a gene is active if a go is active
 #' @param goforce (double) the probability that a gene is active is proportional to the bias element and go force
 #' @param nbgoactive (double) proportion of the go that will randomly selected as active following a binomial distribution
@@ -39,7 +39,7 @@ simuExp<-function(geneset,meanBias,sdBiasGo,sigma, distribution,advantage,goforc
   # randomly assign each geneset to active or not active
   goactive=rbinom(n = nbgo,size = 1,prob = nbgoactive)
   # simulate the covariant in genes
-  tmp=simubias(geneset,meanBias,sdBiasGo,sigma,goactive,distribution)
+  tmp=simuBias(geneset,meanBias,sdBiasGo,sigma,goactive,distribution)
   simugenes=tmp[[2]]
   simugo=tmp[[1]]
   ## simulated go datasetm,  ID ,  ACTIVE,  GENE LENGTH
@@ -59,7 +59,7 @@ simuExp<-function(geneset,meanBias,sdBiasGo,sigma, distribution,advantage,goforc
     {
       simugenes$active[tgenes] = rbinom(length(tgenes), 1, prob = min(goforce+simugenes$bias[tgenes]/divisor1*advantage, 1))
     }
-    else ## if go is NOS active, then binomial probability that the gene is active, ax+b, bias*advantage
+    else ## if go is NOT active, then binomial probability that the gene is active, ax+b, bias*advantage
     {
       simugenes$active[tgenes] = rbinom(length(tgenes), 1, prob = min(0+simugenes$bias[tgenes]/divisor1*advantage/2, 1))
     }
@@ -77,7 +77,7 @@ simuExp<-function(geneset,meanBias,sdBiasGo,sigma, distribution,advantage,goforc
   }
   simugenes
   #    simugenes <- simugenes %>% distinct(gene_id) #remove the doublons
-  activeset = which(simugenes$go_id %in% simugo$go_id[(simugo$active == 1)]) ## save the genes of go that are sleected
+  activeset = which(simugenes$go_id %in% simugo$go_id[(simugo$active == 1)]) ## save the genes of go that are selected
 #  save(simugo, simugenes, parameters, file = paste("simusept/simu", paste(parameters[c(4, 5)], collapse = "-"), nbgo, nbgenes, format(Sys.time(),  "%H:%M:%S"), ".Rdata", sep = "-"))
   #return(c(cor(simugenes[selectset, c(2, 4)])[1, 2], parameters))
   return(list(simugo,simugenes,parameters))

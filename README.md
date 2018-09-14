@@ -60,6 +60,17 @@ The method `simuExp` computes the random biases and simulate the activity.
 
 Finally you can run the typical gene set enrichment test such as the hypergeometric tests. For each gene set, the method `dotest` compute a pvalue corrected for multiple testing (FDR method by default).
 
+### Installation
+
+This package requires biomaRt to be installed first. Then can directly install the package from github using `devtools`.
+
+```
+source("https://bioconductor.org/biocLite.R")
+biocLite("biomaRt")
+library(devtools)
+install_github("elzaguillot/simugo/package")
+```
+
 
 #### Small examples
 
@@ -98,6 +109,7 @@ result=dotest(experiment) # for each gene set return the adjusted pvalue corresp
 plot(result$pval_classic,col=result$active+1,ylab="pvalue",xlab="gene set index") # shows the pvalue color coded by the true activity of the gene set - the pvalue are corrected for mutiple testing with FDR
 abline(0.05,0,lty=2) # pvalue threshold at 0.05
 text(5,0.07,"pvalue = 0.05 threshold")
+legend("topright",c("active","not active"),col=c("red","black"),pch=1)
 ```
 ![example 1](images/example1.png)
 
@@ -122,11 +134,10 @@ experiment # this object contains the data for a simulated experieents, with a l
 ## test for enrichment
 result=dotest(experiment) # for each gene set return the adjusted pvalue corresponding to different methods and the mean value of the bias of its genes
 
-#png("example2.png")
 plot(result$pval_classic,col=result$active+1,ylab="pval",xlab="index of gene set") # shows the pvalue color coded by the true activity of the gene set
 abline(0.05,0,lty=2) # pvalue threshold at 0.05
-#dev.off()
-# in this second, we find similar result as the first one but because we increase the number of genes per gene set, we obtain more true positive
+text(5,0.07,"pvalue = 0.05 threshold")
+legend("topright",c("active","not active"),col=c("red","black"),pch=1)
 ```
 
 ![example 2](images/example2.png)
@@ -152,15 +163,12 @@ experiment <- simuExp(mockgeneset,meanBias,sdBiasGo,sigma, distribution,advantag
 
 ## test for enrichment
 result=dotest(experiment) # for each gene set return the adjusted pvalue corresponding to different methods and the mean value of the bias of its genes
-plot(result$pval_classic,col=result$active+1) # shows the pvalue color coded by the true activity of the gene set
-abline(0.05,0,lty=2) # pvalue threshold at 0.05
 
 
-#png("example3.png")
 hist(result$pval_classic[which(!result$active)],col=rgb(1,0,0,0.4),xlab="pvalue",ylab="number of go",main="",breaks=seq(0,1,by=0.1))
 hist(result$pval_classic[which(result$active==1)],col=rgb(0,0,1,0.4),add=T,breaks=seq(0,1,by=0.1))
 legend('top',c("active go","not active go"),col=c("blue","red"),box.col="white",fill=c("blue","red"))
-#dev.off()
+
 
 ```
 

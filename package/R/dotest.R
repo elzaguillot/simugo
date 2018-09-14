@@ -8,7 +8,7 @@
 #' @param adjustPvalMethod correction method, see `p.adjust`
 #' @param experiment
 
-##script that define function to test for go enrichment according to diffreent methods
+## script that define function to test for go enrichment according to diffrent methods
 
 dotest<-function(experiment,adjustPvalMethod="fdr")
 {## method 1 is global resampling, method 2 is local resampling

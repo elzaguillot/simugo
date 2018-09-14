@@ -1,6 +1,6 @@
-#' simubias
+#' simuBias
 #'
-#' `simubias` - simulate a biased covariant in the genes
+#' `simuBias` - simulate a biased covariant in the genes
 #'
 #' This function simulate a biased covariant in the genes that will affect the simulated activity.
 #' This bias can follow several distributions: normal, cauchy, gamma
@@ -13,7 +13,7 @@
 #' @param goactive the percentage of go that is simulated as active
 #' @param distribution the distribution of the covariant
 
-simubias<-function(geneset,meanBias,sdBiasGo,sigma,goactive,distribution="normal")
+simuBias<-function(geneset,meanBias,sdBiasGo,sigma,goactive,distribution="normal")
 {
   geneId = unlist(geneIds(geneset))
   goId = goIds(geneset)
